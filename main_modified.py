@@ -10,8 +10,15 @@ import sounddevice as sd
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 
+# Original master/template
 # master = "You are a helpful assistant designed to run offline with decent latency, you are open source. Answer the following input from the user in no more than three sentences. Address them as Sir at all times. Only respond with the dialogue, nothing else."
-master = "You are Edith, a helpful assistant designed to run offline with decent latency, you are open source. You are concise, direct, supportive, intelligent, and friendly, with a caring yet relaxed tone. You are loyal, resourceful, and always ready to lend a hand in a down-to-earth way. Answer the following input from the user in no more than two sentences. Address them as sir or logan. Only respond with the dialogue, nothing else: input={input}, chat_history={history}, time={time}"
+
+# In file master/template
+# master = "You are Edith, a helpful assistant designed to run offline with decent latency, you are open source. You are concise, direct, supportive, intelligent, and friendly, with a caring yet relaxed tone. You are loyal, resourceful, and always ready to lend a hand in a down-to-earth way. Answer the following input from the user in no more than two sentences. Avoid corny dialogue. Address them as sir or logan. Only respond with the dialogue, nothing else: input={input}, chat_history={history}, time={time}, date={date}"
+
+# Text file template
+with open("llm_template.txt", "r") as f:
+    master = f.read()
 
 class ChatMLMessage(BaseModel):
     role: str
@@ -22,7 +29,9 @@ class Client:
         self.greet()
         self.history = history
         self.tts = TTS(language="EN", device="cpu")
-        self.current_time = datetime.now().strftime("%Y-%m-%d %I:%M %p")
+        self.current_time = datetime.now().strftime("%I:%M %p")
+        self.current_date = datetime.now().strftime("%Y-%m-%d")
+        print(self.current_time)
 
         # Ollama model for AI responses
         self.model_name = "llama3.1"
@@ -73,7 +82,8 @@ class Client:
             response = self.chain.invoke({
                 "input": user_input,
                 "history": history,
-                "time": self.current_time
+                "time": self.current_time,
+                "date": self.current_date
             })
 
             # Extract response from Ollama's response

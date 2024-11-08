@@ -45,15 +45,15 @@ class Client:
 
     def greet(self):
         print()
-        print("\033[36mWelcome to JARVIS-MLX\n\nFollow @huwprosser_ on X for updates\033[0m")
+        print("\033[36mInitializing AI Assistant... Please wait.\033[0m")
         print()
 
     def addToHistory(self, content: str, role: str):
         """Add the user or assistant message to history and print it."""
         if role == "user":
-            print(f"\033[32m{content}\033[0m")
+            print(f"\033[32m- {content}\033[0m")
         else:
-            print(f"\033[33m{content}\033[0m")
+            print(f"\033[33m- {content}\033[0m")
         
         # If it's a user message, append the master context
         if role == "user":
@@ -70,7 +70,7 @@ class Client:
     def conversation_loop(self):
         """Main loop for handling user input and processing AI responses."""
         while True:
-            user_input = input("\033[36mPlease enter your input: \033[0m")  # Simulating user input
+            user_input = input("\n\033[36mPlease enter your input: \033[0m")  # Simulating user input
             if not user_input.strip():
                 continue  # Skip if no input is provided
 

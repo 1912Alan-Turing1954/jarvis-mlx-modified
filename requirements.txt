@@ -27,6 +27,6 @@ pyaudio
 playsound
 webrtcvad
 sounddevice
-librosa
+librosas
 torchaudio
 datetime

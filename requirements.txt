@@ -18,6 +18,10 @@ scipy
 g2p_en
 cached_path
 
+# Ollama & Langchain
+langchain_core
+langchain_ollama
+
 # Main
 pyaudio
 playsound
@@ -25,3 +29,4 @@ webrtcvad
 sounddevice
 librosa
 torchaudio
+datetime

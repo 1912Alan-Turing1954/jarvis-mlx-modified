@@ -73,6 +73,8 @@ class Client:
             user_input = input("\n\033[36mPlease enter your input: \033[0m")  # Simulating user input
             if not user_input.strip():
                 continue  # Skip if no input is provided
+            
+            playsound("beep.mp3")
 
             self.addToHistory(user_input, "user")  # Add user input to history
 
@@ -85,7 +87,7 @@ class Client:
                 "time": self.current_time,
                 "date": self.current_date
             })
-
+            
             # Extract response from Ollama's response
             assistant_response = response
 
@@ -110,6 +112,8 @@ class Client:
             noise_scale=1,
             noise_scale_w=0.8,
         )
+
+        playsound("beep.mp3")
 
         # Play the raw audio data using sounddevice (no need to use librosa)
         sd.play(audio_data, 44100, blocking=True)  # Play at 44.1 kHz sample rate

@@ -1,3 +1,8 @@
+import warnings
+
+# Suppress specific BERT warning
+warnings.filterwarnings("ignore")
+
 import time
 from datetime import datetime
 import threading

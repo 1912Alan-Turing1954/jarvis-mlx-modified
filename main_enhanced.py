@@ -1,3 +1,8 @@
+import warnings
+
+# Ignore all warnings from the transformers module
+warnings.filterwarnings("ignore", module="transformers")
+
 from datetime import datetime
 import threading
 import sounddevice as sd
@@ -7,12 +12,8 @@ from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 from speech_to_text import record_audio, transcribe_audio
-import warnings
 import json
 import os
-
-# Suppress specific BERT warning
-warnings.filterwarnings("ignore")
 
 MAX_HISTORY_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB
 

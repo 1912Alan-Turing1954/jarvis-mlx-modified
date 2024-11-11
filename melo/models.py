@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings('ignore')
+
 import math
 import torch
 from torch import nn

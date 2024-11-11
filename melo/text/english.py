@@ -3,6 +3,12 @@ import os
 import re
 from g2p_en import G2p
 
+import warnings
+
+warnings.filterwarnings("ignore")
+
+
+
 from . import symbols
 
 from .english_utils.abbreviations import expand_abbreviations

@@ -30,3 +30,4 @@ sounddevice
 librosas
 torchaudio
 datetime
+soundfile

@@ -1,6 +1,10 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
 
 model_id = "bert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_id)

@@ -31,7 +31,6 @@ class Client:
         self.tts = TTS(language="EN", device="cpu")
         self.current_time = datetime.now().strftime("%I:%M %p")
         self.current_date = datetime.now().strftime("%Y-%m-%d")
-        print(self.current_time)
 
         # Ollama model for AI responses
         self.model_name = "llama3.1"
@@ -45,7 +44,7 @@ class Client:
 
     def greet(self):
         print()
-        print("\033[36mInitializing AI Assistant... Please wait.\033[0m")
+        print("\n\033[36mInitializing AI Assistant... Please wait.\033[0m")
         print()
 
     def addToHistory(self, content: str, role: str):
@@ -71,6 +70,9 @@ class Client:
         """Main loop for handling user input and processing AI responses."""
         while True:
             try:
+                print(f"\n\033[37m- Chat History \n{self.getHistoryAsString()}\033[0m")
+
+
                 user_input = input("\n\033[36mPlease enter your input: \033[0m")  # Simulating user input
                 if not user_input.strip():
                     continue  # Skip if no input is provided
@@ -96,6 +98,7 @@ class Client:
 
                 # Use TTS to speak out the assistant's response
                 self.speak(assistant_response)
+
             except Exception as e:
                 print('- An error has ocurred -')
                 print(e)

@@ -60,7 +60,7 @@ class Client:
             content = f"{master}\n\n{content}"
         self.history.append(ChatMLMessage(content=content, role=role))
 
-    def getHistoryAsString(self):
+    def getHistoryAsString(self) -> str:
         """Return the chat history as a formatted string."""
         final_str = ""
         for message in self.history:
@@ -70,55 +70,65 @@ class Client:
     def conversation_loop(self):
         """Main loop for handling user input and processing AI responses."""
         while True:
-            user_input = input("\n\033[36mPlease enter your input: \033[0m")  # Simulating user input
-            if not user_input.strip():
-                continue  # Skip if no input is provided
-            
-            playsound("beep.mp3")
+            try:
+                user_input = input("\n\033[36mPlease enter your input: \033[0m")  # Simulating user input
+                if not user_input.strip():
+                    continue  # Skip if no input is provided
+                
+                playsound("beep.mp3")
 
-            self.addToHistory(user_input, "user")  # Add user input to history
+                self.addToHistory(user_input, "user")  # Add user input to history
 
-            # Get the conversation history as string
-            history = self.getHistoryAsString()
+                # Get the conversation history as string
+                history = self.getHistoryAsString()
 
-            response = self.chain.invoke({
-                "input": user_input,
-                "history": history,
-                "time": self.current_time,
-                "date": self.current_date
-            })
-            
-            # Extract response from Ollama's response
-            assistant_response = response
+                response = self.chain.invoke({
+                    "input": user_input,
+                    "history": history,
+                    "time": self.current_time,
+                    "date": self.current_date
+                })
+                
+                # Extract response from Ollama's response
+                assistant_response = response
 
-            self.addToHistory(assistant_response, "assistant")  # Add assistant's response to history
+                self.addToHistory(assistant_response, "assistant")  # Add assistant's response to history
 
-            # Use TTS to speak out the assistant's response
-            self.speak(assistant_response)
+                # Use TTS to speak out the assistant's response
+                self.speak(assistant_response)
+            except Exception as e:
+                print('- An error has ocurred -')
+                print(e)
+
 
     def speak(self, text):
-        """Use TTS (Text-to-Speech) to speak the response."""
-        speaker_ids = self.tts.hps.data.spk2id
+        try:
+            """Use TTS (Text-to-Speech) to speak the response."""
+            speaker_ids = self.tts.hps.data.spk2id
 
-        print(speaker_ids)
+            print(speaker_ids)
 
-        # Generate audio file from text
-        audio_data = self.tts.tts_to_file(
-            text,
-            speaker_ids["EN-Default"],
-            speed=0.94,
-            quiet=True,
-            sdp_ratio=0.5,
-            noise_scale=1,
-            noise_scale_w=0.8,
-        )
+            # Generate audio file from text
+            audio_data = self.tts.tts_to_file(
+                text,
+                speaker_ids["EN-Default"],
+                speed=0.94,
+                quiet=True,
+                sdp_ratio=0.5,
+                noise_scale=1,
+                noise_scale_w=0.8,
+            )
 
-        playsound("beep.mp3")
+            playsound("beep.mp3")
 
-        # Play the raw audio data using sounddevice (no need to use librosa)
-        sd.play(audio_data, 44100, blocking=True)  # Play at 44.1 kHz sample rate
-        print(f"\033[36m{text}\033[0m")
-        
-        time.sleep(1)  # Delay to simulate the pause between responses
+            # Play the raw audio data using sounddevice (no need to use librosa)
+            sd.play(audio_data, 44100, blocking=True)  # Play at 44.1 kHz sample rate
+            print(f"\033[36m{text}\033[0m")
+    
+            time.sleep(1)  # Delay to simulate the pause between responses
+        except Exception as e:
+            print("An error has ocurred")
+            print(e)
+
 if __name__ == "__main__":
     jc = Client(history=[])

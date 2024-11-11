@@ -1,8 +1,3 @@
-import warnings
-
-# Ignore all warnings from the transformers module
-warnings.filterwarnings("ignore", module="transformers")
-
 from datetime import datetime
 import threading
 import sounddevice as sd

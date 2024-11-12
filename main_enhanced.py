@@ -154,6 +154,7 @@ class Client:
                     "time": self.current_time,
                     "date": self.current_date
                 })
+
                 assistant_response = response
 
                 self.addToHistory(assistant_response, "assistant")

@@ -1,8 +1,10 @@
-import pytest
-from mlx_lm import load, generate
+from langchain_ollama import OllamaLLM
 
+llm = OllamaLLM(model='llama3.1')
+messages = [{'role': 'user', 'content': 'Name an engineer that passes the vibe check'}]
+stream = llm.chat(model='llama3.1', messages=messages, stream=True)
 
-def test_llm():
-    model, tokenizer = load("mlx-community/Phi-3-mini-4k-instruct-8bit")
-    response = generate(model, tokenizer, prompt="hello", verbose=True)
-    assert len(response) > 0
+llm
+
+for chunk in stream:
+    print(chunk['message']['content'], end='', flush=True)

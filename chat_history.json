@@ -2,43 +2,19 @@
     "history": [
         {
             "role": "user",
-            "content": "edith"
+            "content": "\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[A\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[Bddddddddd"
         },
         {
             "role": "assistant",
-            "content": "Sir, it seems we're stuck in a loop; since the 12th has started, I'll close this chat window and wait for your fresh start. Would you like to reopen our conversation now?"
+            "content": "Sir, it appears you've entered a series of capital letters. Would you like to proceed with your original input or start fresh?"
         },
         {
             "role": "user",
-            "content": "edith"
+            "content": "hello"
         },
         {
             "role": "assistant",
-            "content": "Sir, it looks like we're still in a loop from last night; since it's the 12th and we've entered a new day, I'll close this chat window. Would you like to reopen our conversation now?"
-        },
-        {
-            "role": "user",
-            "content": "edith"
-        },
-        {
-            "role": "assistant",
-            "content": "Sir, since it's past midnight and we've entered a new day, I'll go ahead and close this chat window. Would you like to start fresh for today, November 12th?"
-        },
-        {
-            "role": "user",
-            "content": "edith"
-        },
-        {
-            "role": "assistant",
-            "content": "Sir, it looks like we're still stuck in yesterday's loop; shall I close this chat window since it's indeed past midnight and we've entered a new day? Would you like to start fresh for November 12th now that the clock has struck the morning hours?"
-        },
-        {
-            "role": "user",
-            "content": "what time is it edith"
-        },
-        {
-            "role": "assistant",
-            "content": "It's currently past midnight on November 12th, sir. The time is 9:52 AM this morning."
+            "content": "Hello Logan! How can I assist you today?"
         }
     ]
 }

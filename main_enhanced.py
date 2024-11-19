@@ -19,86 +19,12 @@ MAX_HISTORY_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB
 DEFAULT_SETTINGS = {
     'text_mode': True,
     'language': 'EN',  # Default language for TTS
+    'accent': 'EN-Default',
     'history_size': 5,  # Default to keep last 5 history items
     'model_name': 'llama3.1',  # Default model name
 }
 SETTINGS_FILE = 'assistant_settings.json'
 
-# Load settings from a file or use default settings
-def load_settings():
-    """Load settings from a JSON file, if it exists."""
-    if os.path.exists(SETTINGS_FILE):
-        with open(SETTINGS_FILE, 'r') as f:
-            return json.load(f)
-    else:
-        # If no settings file exists, use the default settings
-        return DEFAULT_SETTINGS
-
-# Save settings to a JSON file
-def save_settings(settings):
-    """Save settings to a JSON file."""
-    with open(SETTINGS_FILE, 'w') as f:
-        json.dump(settings, f, indent=4)
-
-# Print the settings menu
-def print_settings_menu(settings):
-    """Print the current settings menu."""
-    print("\n\033[36m" + "_"*40 + "\033[0m")  # Cyan for separator
-    print("\033[34m--- Settings Menu ---\033[0m")
-    print("\033[33m1. Text Mode: {}\033[0m".format("Enabled" if settings['text_mode'] else "Disabled"))
-    print("\033[33m2. Language: {}\033[0m".format(settings['language']))
-    print("\033[33m3. Chat History Size: {}\033[0m".format(settings['history_size']))
-    print("\033[33m4. Model: {}\033[0m".format(settings['model_name']))
-    print("\033[33m5. Remove History Items\033[0m")
-    print("\033[33m6. Exit Settings\033[0m")
-
-# Handle the user's choice in the settings menu
-def handle_settings_choice(settings, client):
-    """Handle the user's choice in the settings menu."""
-    while True:
-        print_settings_menu(settings)
-        user_choice = input("\033[32mPlease select an option (1-6): \033[0m")
-        
-        if user_choice == '1':
-            settings['text_mode'] = not settings['text_mode']
-            print("\033[33mText Mode has been {}\033[0m".format("Enabled" if settings['text_mode'] else "Disabled"))
-        elif user_choice == '2':
-            new_language = input("\033[32mEnter language code (e.g., EN, FR, etc.): \033[0m").strip()
-            settings['language'] = new_language
-            print("\033[33mLanguage set to: {}\033[0m".format(new_language))
-        elif user_choice == '3':
-            try:
-                new_history_size = int(input("\033[32mEnter number of history items to keep: \033[0m"))
-                settings['history_size'] = new_history_size
-                print("\033[33mHistory size set to: {}\033[0m".format(new_history_size))
-            except ValueError:
-                print("\033[31mInvalid input. Please enter a number.\033[0m")
-        elif user_choice == '4':
-            new_model = input("\033[32mEnter model name (e.g., llama3.1): \033[0m").strip()
-            settings['model_name'] = new_model
-            print("\033[33mModel set to: {}\033[0m".format(new_model))
-        elif user_choice == '5':
-            # Option to remove history items
-            try:
-                num_to_remove = int(input("\033[32mEnter the number of history items to remove from the end: \033[0m"))
-                client.remove_history_items(num_to_remove)
-                print(f"\033[33mRemoved {num_to_remove} items from the history.\033[0m")
-            except ValueError:
-                print("\033[31mInvalid input. Please enter a valid number.\033[0m")
-        elif user_choice == '6':
-            print("\033[34mExiting settings...\033[0m")
-            save_settings(settings)  # Save settings before exiting
-            break
-        else:
-            print("\033[31mInvalid option. Please try again.\033[0m")
-
-# Settings entry point
-def enter_settings(client):
-    """Start the settings menu and manage settings changes."""
-    settings = load_settings()  # Load current settings
-    handle_settings_choice(settings, client)  # Show the menu and allow the user to adjust settings
-
-# AI Assistant main class
 class ChatMLMessage(BaseModel):
     role: str
     content: str
@@ -107,7 +33,7 @@ class Client:
     def __init__(self, history: list[ChatMLMessage] = []):
         self.greet()
         self.history = history
-        self.settings = load_settings()  # Load settings
+        self.settings = self.load_settings()  # Load settings
         self.tts = TTS(language=self.settings['language'], device="cpu")
         self.text_mode = self.settings['text_mode']  # Initialize text_mode from settings
 
@@ -123,6 +49,94 @@ class Client:
 
     def greet(self):
         print("\n\033[36m--- Initializing AI Assistant... Please wait. ---\033[0m")  # Cyan
+
+    # Load settings from a JSON file, if it exists
+    def load_settings(self):
+        if os.path.exists(SETTINGS_FILE):
+            with open(SETTINGS_FILE, 'r') as f:
+                return json.load(f)
+        else:
+            return DEFAULT_SETTINGS
+
+    # Save settings to a JSON file
+    def save_settings(self):
+        with open(SETTINGS_FILE, 'w') as f:
+            json.dump(self.settings, f, indent=4)
+
+    # Print the settings menu
+    def print_settings_menu(self):
+        print("\n\033[36m" + "_"*40 + "\033[0m")  # Cyan for separator
+        print("\n\033[34m--- Settings Menu ---\033[0m")
+        print("\033[33m1. Input Mode: {}\033[0m".format("Enabled" if self.settings['text_mode'] else "Disabled"))
+        print("\033[33m2. Language: {}\033[0m".format(self.settings['language']))
+        print("\033[33m3. Accent: {}\033[0m".format(self.settings['accent']))
+        print("\033[33m4. Chat History Size: {}\033[0m".format(self.settings['history_size']))
+        print("\033[33m5. Model: {}\033[0m".format(self.settings['model_name']))
+        print("\033[33m6. Remove History Items\033[0m")
+        print("\033[33m7. Exit Settings\033[0m")
+
+    # Handle the user's choice in the settings menu
+    def handle_settings_choice(self):
+        while True:
+            self.print_settings_menu()
+            user_choice = input("\033[32mPlease select an option (1-6): \033[0m")
+            
+            if user_choice == '1':
+                self.settings['text_mode'] = not self.settings['text_mode']
+                print("\033[33mInput Mode has been {}\033[0m".format("Enabled" if self.settings['text_mode'] else "Disabled"))
+            elif user_choice == '2':
+                new_language = input("\033[32mEnter language code (e.g., EN, FR, etc.): \033[0m").strip()
+                self.settings['language'] = new_language
+                print("\033[33mLanguage set to: {}\033[0m".format(new_language))
+            elif user_choice == '3':
+                print("\n\033[33m-- Accent Choices --\033[0m")  # Red
+                print("\033[33m1. EN-Default\033[0m")  # Red
+                print("\033[33m2. EN-US\033[0m")
+                print("\033[33m3. EN-BR\033[0m")  # Red
+                print("\033[33m4. EN_INDIA\033[0m")  # Red
+                print("\033[33m5. EN-AU\033[0m")  # Red
+
+                new_accent = input("\033[32mEnter accent code (e.g., 1, 2, etc.): \033[0m").strip()
+                if new_accent == '1':
+                    new_accent = "EN-Default"
+                elif new_accent == '2':
+                    new_accent = "EN-US"
+                elif new_accent == '3':
+                    new_accent = "EN-BR"
+                elif new_accent == '4':                
+                    new_accent = "EN_INDIA"
+                elif new_accent == '5':
+                    new_accent = "EN-AU"
+                else:
+                    print("\033[31mInvalid option. Please try again.\033[0m")
+                
+                self.settings['accent'] = new_accent
+                print("\033[33mAccent set to: {}\033[0m".format(new_accent))
+
+            elif user_choice == '4':
+                try:
+                    new_history_size = int(input("\033[32mEnter number of history items to keep: \033[0m"))
+                    self.settings['history_size'] = new_history_size
+                    print("\033[33mHistory size set to: {}\033[0m".format(new_history_size))
+                except ValueError:
+                    print("\033[31mInvalid input. Please enter a number.\033[0m")
+            elif user_choice == '5':
+                new_model = input("\033[32mEnter model name (e.g., llama3.1): \033[0m").strip()
+                self.settings['model_name'] = new_model
+                print("\033[33mModel set to: {}\033[0m".format(new_model))
+            elif user_choice == '6':
+                self.handle_large_file()
+            elif user_choice == '7':
+                print("\033[34mExiting settings...\033[0m")
+                self.save_settings()  # Save settings before exiting
+                break
+            else:
+                print("\033[31mInvalid option. Please try again.\033[0m")
+
+    # Settings entry point
+    def enter_settings(self):
+        """Start the settings menu and manage settings changes."""
+        self.handle_settings_choice()  # Show the menu and allow the user to adjust settings
 
     def addToHistory(self, content: str, role: str):
         """Add the user or assistant message to history and print it."""
@@ -160,39 +174,30 @@ class Client:
         if num_items <= len(self.history):
             self.history = self.history[:-num_items]
             self.save_history_to_json()
-            print(f"\033[33mRemoved {num_items} history items.\033[0m")
         else:
             print("\033[31mCannot remove more items than are in the history.\033[0m")
 
     def handle_large_file(self):
         """Handle situations where the file is too large."""
-        print("\033[31mHistory file is too large. Would you like to reduce it?\033[0m")  # Red
-        print("\033[31mOptions to reduce:\033[0m")  # Red
-        print("\033[31m1. Keep only the last 1/3 of the history.\033[0m")  # Red
-        print("\033[31m2. Keep only the last 1/2 of the history.\033[0m")  # Red
-        print("\033[31m3. Keep only the last 1/4 of the history.\033[0m")  # Red
-        print("\033[31m4. Remove all history.\033[0m")  # Red
+        self.print_separator()
+        print("\033[33mHistory file is too large. Would you like to reduce it?\033[0m")  # Red
+        print("\033[33mOptions to reduce:\033[0m")  # Red
+        print("\033[33m1. Remove a specified number of history items from the end\033[0m")
+        print("\033[33m2. Remove all history.\033[0m")  # Red
 
         # Get user input to decide how much history to keep
-        user_input = input("\033[31mEnter '1', '2', '3', or '4' to select your option: \033[0m")  # Red
+        user_input = input("\033[32mEnter your choice (1-2): \033[0m")
 
         # Decide how much to reduce based on user input
         if user_input == '1':
-            # Keep the last 1/3
-            print("\033[33mReducing history size to the last 1/3...\033[0m")  # Yellow
-            new_size = len(self.history) // 3
-            self.history = self.history[-new_size:]
+            # Option 5 - Remove History Items
+            num_to_remove = int(input("\033[32mEnter the number of history items to remove from the end: \033[0m"))
+            if num_to_remove <= len(self.history):
+                self.remove_history_items(num_to_remove)
+                print(f"\033[33mRemoved {num_to_remove} history items.\033[0m")
+            else:
+                print("\033[31mCannot remove more items than are in the history.\033[0m")
         elif user_input == '2':
-            # Keep the last 1/2
-            print("\033[33mReducing history size to the last 1/2...\033[0m")  # Yellow
-            new_size = len(self.history) // 2
-            self.history = self.history[-new_size:]
-        elif user_input == '3':
-            # Keep the last 1/4
-            print("\033[33mReducing history size to the last 1/4...\033[0m")  # Yellow
-            new_size = len(self.history) // 4
-            self.history = self.history[-new_size:]
-        elif user_input == '4':
             # Remove all history
             print("\033[33mRemoving all history...\033[0m")  # Yellow
             self.history = []  # Clear history
@@ -214,7 +219,7 @@ class Client:
         normalized_input = user_input.replace(" ", "").lower()  # Remove spaces and convert to lowercase
 
         if 'settings' in normalized_input or 'chatsettings' in normalized_input:
-            enter_settings(self)  # This will take the user to the settings menu
+            self.enter_settings()  # This will take the user to the settings menu
             return True
 
         # Check for 'textmode' switch when currently in voice mode
@@ -295,7 +300,7 @@ class Client:
             # Generate audio file from text (avoid repeated generation by saving to file)
             audio_data = self.tts.tts_to_file(
                 text,
-                speaker_ids["EN-Default"],
+                self.settings['accent'],
                 speed=0.94,
                 quiet=True,
                 sdp_ratio=0.5,
@@ -330,3 +335,5 @@ if __name__ == "__main__":
 
     # Create a new Client instance with the loaded history
     jc = Client(history)
+
+

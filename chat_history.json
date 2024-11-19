@@ -2,19 +2,19 @@
     "history": [
         {
             "role": "user",
-            "content": "\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[A\u001b[B\u001b[B\u001b[B\u001b[B\u001b[B\u001b[Bddddddddd"
-        },
-        {
-            "role": "assistant",
-            "content": "Sir, it appears you've entered a series of capital letters. Would you like to proceed with your original input or start fresh?"
-        },
-        {
-            "role": "user",
             "content": "hello"
         },
         {
             "role": "assistant",
-            "content": "Hello Logan! How can I assist you today?"
+            "content": "Hello Logan, how can I assist you today?"
+        },
+        {
+            "role": "user",
+            "content": "how are you edith"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm doing well, thank you for asking, Logan. How can I help you tonight?"
         }
     ]
 }
